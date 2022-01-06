@@ -6,6 +6,7 @@ le 16/12/2021
 
 from tkinter import *
 import fonction as f
+from random import *
 
 def Clavier(event): #Gestion de l'évenement Appui sur une touche du clavier
     global PosX,PosY
@@ -34,42 +35,59 @@ def CreationTir():
 def MouvTir():
     global touche,YLaser,Laser,VerifLaser
     if VerifLaser:
-        if Canevas.coords(Laser)[1]<=100:
-            Canevas.bind('s',Clavier)
+        if Canevas.coords(Laser)[1]<=0:
             Canevas.delete(Laser)
             VerifLaser=True
         else :
             Canevas.move(Laser,0,-10)
             fen.after(10,MouvTir)
 
-#Création aliens
-al=PhotoImage(file='enemy.gif')
-def CreationAliens(X,Y):
-    Alien=Canevas.create_image(X,Y,anchor=NW,image=al)
-    return Alien
-Aliens=""
-TirAlien=[]
+#Déplacement de l'alien
+def deplacementAl():
+    global X,Y,dX,dY,Largeur,Hauteur
+    TailleAlien=50
+    XP=Canevas.coords(Aliens[0][0])[0]
+    XD=Canevas.coords(Aliens[0][-1])[0]
+    #rebond à gauche
+    if XP+dX<0:
+        X=0
+        dX=-dX
+        Y+=TailleAlien
+    #rebond à droite
+    if XD+TailleAlien+dX>Largeur:
+        X=Largeur-TailleAlien-500
+        dX=-dX
+        Y+=TailleAlien
+    #nouvelle direction
+    X=X+dX
+    Y=Y+dY
+    #affichage
+    for i in range(len(Aliens)):
+        for j in range(len(Aliens[i])):
+            Canevas.coords(Aliens[i][j],X+j*100,Y+i*100)
+    if Y>=700:
+        Canevas.unbind('l')
+    #déplacement
+    fen.after(40,deplacementAl)
 
-class vaisseau:
-    def__init__(self,PosX,PosY):
-        self.PosX=PosX
-        self.PosY=PosY
-    
-    def Clavier(event): #Gestion de l'évenement Appui sur une touche du clavier
-    touche=event.keysym
-    #déplacement vers la droite
-    if touche== 'd' :
-        if PosX<1650:
-            PosX+=10
-    #déplacement vers la gauche
-    if touche=='q' :
-        if PosX>50:
-            PosX-=10
-    if touche=='l':
-        CreationTir()
-        MouvTir()
-    #on dessine le vaisseau à sa nouvelle place
-    Canevas.coords(Vaisseau,PosX,PosY)
+def CreationTirAlien():
+    global Aliens,TirAlien,YAlien,TirAlien
+    i=randint(0,len(Aliens)-1)
+    j=randint(0,len(Aliens[i])-1)
+    XAlien=Canevas.coords(Aliens[i][j])[0]
+    YAlien=Canevas.coords(Aliens[i][j])[1]
+    TirAlien.append(Canevas.create_image(XAlien,YAlien,image=bombe))
+    fen.after(1000,CreationTirAlien)
+
+def MouvTirAlien():
+    global Aliens,TirAlien,YAlien
+    for k in range(len(TirAlien)-1):
+        if Canevas.coords(TirAlien[k])[1]==900:
+            Canevas.delete(TirAlien[k])
+            TirAlien.pop(k)
+        else : 
+            Canevas.move(TirAlien[k],0,10)
+    fen.after(10,MouvTirAlien)
 
 
 
@@ -78,15 +96,32 @@ fen.title('Space invaders')
 photo = PhotoImage(file="space_invaders_wallpaper.gif")
 
 
-Largeur = 1700
+Largeur = 1800
 Hauteur = 800
 Canevas = Canvas(fen,width = Largeur, height =Hauteur)
 # vesseau = Canevas.create_polygon(vx1,vy1,vx2,vy1,vx3,vy,width=5,outline='black',fill='yellow')
 item = Canevas.create_image(0,0,anchor=NW, image=photo)
 
+start = Button(fen, text='Nouvelle Partie')
+start.pack(anchor=N, padx=5, pady=5)
 
+# Création d'un widget Button (bouton quitter)
+Quitter = Button(fen, text ='Quitter',command=fen.destroy)
+Quitter.pack(anchor=NE, padx = 5, pady = 5)
+
+#Afichage score
+x=StringVar()
+score = Label(fen, text="Score :" , fg="black")
+score.pack(anchor=NW, padx = 5, pady = 5)
+Canevas.pack()
+
+Life=PhotoImage(file='life-3.gif')
 Dab=PhotoImage(file='player.gif')
 Arc=PhotoImage(file='laser.gif')
+bombe=PhotoImage(file='egg.gif')
+
+vie=Canevas.create_image(0,0,anchor=NW,image=Life)
+Canevas.pack()
 
 #Création vaisseau
 PosX=450
@@ -98,12 +133,43 @@ Canevas.bind('q',Clavier)
 Canevas.bind('l',Clavier)
 Canevas.pack()
 
+#Création aliens
+al=PhotoImage(file='enemy.gif')
+def CreationAliens(X,Y):
+    Alien=Canevas.create_image(X,Y,anchor=NW,image=al)
+    return Alien
+
+TirAlien=[]
+Aliens=[[],[],[]]
+X=200
+Y=0
+for i in range (0,3):
+    for j in range (2,8):
+        Aliens[i].append(CreationAliens(j*100,i*100))
+#direction initiale
+dX=3
+dY=0
+for i in range (0,3):
+    for j in range (0,6):
+        Canevas.move(Aliens[i][j],dX,dY)
+
 VerifLaser=True
 YLaser=750
+
+deplacementAl()
+CreationTirAlien()
+MouvTirAlien()
+
+
+# #Affichage vies
+# y=StringVar()
+# y.set("Vies restantes: "+str(Vies))
+# LabelVies=Label(fen,textvariable=y,fg='black',bg='white')
+
 
 fen.mainloop()
 
 
 #Canevas.coords(Vaisseau,X-rayon,Y-rayon,X+rayon,Y+rayon)
-#fen.after(20,deplacement)
+#fen.after(20,deplacementAl)
 
