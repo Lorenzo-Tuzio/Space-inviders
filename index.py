@@ -42,6 +42,12 @@ def MouvTir():
             Canevas.move(Laser,0,-10)
             fen.after(10,MouvTir)
 
+def VerificationLaser():
+    global VerifLaser
+    if VerifLaser:
+        DestructionLaser()
+        fen.after(50,VerificationLaser)
+
 #Déplacement de l'alien
 def deplacementAl():
     global X,Y,dX,dY,Largeur,Hauteur
@@ -71,7 +77,7 @@ def deplacementAl():
     fen.after(40,deplacementAl)
 
 def CreationTirAlien():
-    global Aliens,TirAlien,YAlien,TirAlien
+    global Aliens,TirAlien,YAlien
     i=randint(0,len(Aliens)-1)
     j=randint(0,len(Aliens[i])-1)
     XAlien=Canevas.coords(Aliens[i][j])[0]
@@ -88,6 +94,30 @@ def MouvTirAlien():
         else : 
             Canevas.move(TirAlien[k],0,10)
     fen.after(10,MouvTirAlien)
+
+def DestructionLaser():
+    global Laser,TirAlien,Aliens,Ilots,Vaisseau,VerifLaser,Score,Morts
+    #on cherche les éléments qui ont la même position que le laser
+    collision=False
+    x1Laser=Canevas.coords(Laser)[0]
+    y1Laser=Canevas.coords(Laser)[1]
+    x2Laser=x1Laser+20
+    y2Laser=y1Laser+20
+    Impact1=Canevas.find_overlapping(x1Laser,y1Laser,x2Laser,y2Laser)
+    #retourne la liste des éléments touchés
+    #suppression des éléments qui sont entrés en collision
+    for i in Impact1:
+        for i3 in Aliens:
+            for j in i3:
+                if i==j:
+                    Canevas.delete(j)
+                    collision=True
+                    Score+=50
+                    Morts+=1
+            if Morts==18:
+                Canevas.create_image(0,0,anchor=NW,image=Victoire)
+        if collision:
+            Canevas.delete(Laser)
 
 
 
@@ -111,16 +141,22 @@ Quitter.pack(anchor=NE, padx = 5, pady = 5)
 
 #Afichage score
 x=StringVar()
-score = Label(fen, text="Score :" , fg="black")
+score = Label(fen, textvariable=x , fg="black")
+
 score.pack(anchor=NW, padx = 5, pady = 5)
 Canevas.pack()
 
-Life=PhotoImage(file='life-3.gif')
+Life=[PhotoImage(file='life-1.gif'),PhotoImage(file='life-2.gif'),PhotoImage(file='life-3.gif')]
 Dab=PhotoImage(file='player.gif')
 Arc=PhotoImage(file='laser.gif')
 bombe=PhotoImage(file='egg.gif')
+Defaite=PhotoImage(file='game_over.gif')
+Victoire=PhotoImage(file='Win.gif')
 
-vie=Canevas.create_image(0,0,anchor=NW,image=Life)
+Vies=3
+Morts=0
+Score=0
+vie=Canevas.create_image(0,0,anchor=NW,image=Life[Vies-1])
 Canevas.pack()
 
 #Création vaisseau
