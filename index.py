@@ -36,11 +36,42 @@ class Vaisseau:
     def __init__(self, Canevas):
         self.PosX=450
         self.PosY=750
+        self.Laser=True
         self.joueur=PhotoImage(file='player.gif')
         self.Canevas = Canevas
         self.image = self.Canevas.create_image(self.PosX,self.PosY,image=self.joueur)
+
+
+    def CreationTir(self):
+        XLaser=self.PosX
+        YLaser1=self.PosY
+        self.tir=PhotoImage(file='laser.gif')
+        self.Laser=self.Canevas.create_image(XLaser,YLaser1,image=self.tir)
+        self.VerifLaser=True
+        self.VerificationLaser()
+    
+    def MouvTir(self):
+        if self.VerifLaser:
+            if self.Canevas.coords(self.Laser)[1]<=0:
+                self.Canevas.delete(self.Laser)
+                self.VerifLaser=True
+            else :
+                self.Canevas.move(self.Laser,0,-10)
+                SpaceInvaders.fen.after(10,self.MouvTir)
+
+    def VerificationLaser(self):
+        if self.VerifLaser:
+            SpaceInvaders.fen.after(50,self.VerificationLaser)
         
 
+class Aliens:
+    def __init__(self, Canevas):
+        self.X=200
+        self.Y=0
+        self.alien=PhotoImage(file='enemy.gif')
+        self.Canevas = Canevas
+        self.image = self.Canevas.create_image(self.X,self.Y,image=self.alien)
+    
 # Canevas.focus_set()
 
 # Canevas.bind('l',tirer)  # tirer
@@ -76,6 +107,9 @@ class SpaceInvaders:
         if touche =='q' :
             if self.vaisseau.PosX>50:
                 self.vaisseau.PosX-=10
+        if touche=='l':
+            self.vaisseau.CreationTir()
+            self.vaisseau.MouvTir()
             #on dessine le vaisseau à sa nouvelle place
         self.Canevas.coords(self.vaisseau.image,self.vaisseau.PosX,self.vaisseau.PosY)
 
