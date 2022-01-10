@@ -30,14 +30,15 @@ def CreationTir():
     XLaser=PosX
     YLaser1=PosY
     Laser=Canevas.create_image(XLaser,YLaser1,image=Arc)
-
+    VerifLaser=True
+    VerificationLaser()
     
 def MouvTir():
     global touche,YLaser,Laser,VerifLaser
     if VerifLaser:
         if Canevas.coords(Laser)[1]<=0:
             Canevas.delete(Laser)
-            VerifLaser=True
+            VerifLaser=False
         else :
             Canevas.move(Laser,0,-10)
             fen.after(10,MouvTir)
@@ -82,7 +83,8 @@ def CreationTirAlien():
     j=randint(0,len(Aliens[i])-1)
     XAlien=Canevas.coords(Aliens[i][j])[0]
     YAlien=Canevas.coords(Aliens[i][j])[1]
-    TirAlien.append(Canevas.create_image(XAlien,YAlien,image=bombe))
+    TirAlien.append(Canevas.create_image(XAlien,YAlien,image=Arc))
+    DestructionTirAlien()
     fen.after(1000,CreationTirAlien)
 
 def MouvTirAlien():
@@ -119,6 +121,30 @@ def DestructionLaser():
         if collision:
             Canevas.delete(Laser)
 
+def DestructionTirAlien():
+    global Laser,TirAlien,Aliens,Ilots,Vaisseau,VerifLaser,Vies
+    Collision=False
+    #on cherche les éléments qui ont la même position que les tirs des aliens
+    if len(TirAlien)!=0:
+        for j in TirAlien:
+            n=Canevas.coords(j)
+            x1TirAlien=Canevas.coords(j)[0]
+            y1TirAlien=Canevas.coords(j)[1]
+            x2TirAlien=x1TirAlien+20
+            y2TirAlien=x2TirAlien+20
+            Impact2=Canevas.find_overlapping(x1TirAlien,y1TirAlien,x2TirAlien,y2TirAlien) #retourne la liste des éléments touchés
+            #suppression des éléments qui sont entrés en collision
+            for k in Impact2:
+                if k==Vaisseau:
+                    Vies-=1
+                    Collision=True
+                if Collision:
+                    Canevas.delete(j)
+                    TirAlien.pop(TirAlien.index(j))
+                    if Vies==0:
+                        Canevas.delete(k)
+                        Canevas.create_image(0,0,anchor=NW,image=Defaite)
+    fen.after(10,DestructionTirAlien)
 
 
 fen=Tk()
