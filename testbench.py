@@ -22,7 +22,6 @@ def Clavier(event): #Gestion de l'évenement Appui sur une touche du clavier
     if touche=='l':
         CreationTir()
         MouvTir()
-        DestructionLaser()
     #on dessine le vaisseau à sa nouvelle place
     Canevas.coords(Vaisseau,PosX,PosY)
 
@@ -32,16 +31,26 @@ def CreationTir():
     YLaser1=PosY
     Laser=Canevas.create_image(XLaser,YLaser1,image=Arc)
     VerifLaser=True
+    VerificationLaser()
 
-    
 def MouvTir():
     global touche,YLaser,Laser,VerifLaser
     if VerifLaser:
-        if Laser and Canevas.coords(Laser)[1]<=0:
+        # if Laser and Canevas.coords(Laser)[1]<=0:
+        #     Canevas.delete(Laser)
+        #     VerifLaser=False
+        #     return(Canevas.coords(Laser))
+        # else :
+        Canevas.move(Laser,0,-10)
+        if Canevas.coords(Laser)[1]<=-Hauteur:
             Canevas.delete(Laser)
-        else :
-            Canevas.move(Laser,0,-10)
-            fen.after(10,MouvTir)
+        fen.after(10,MouvTir)
+
+def VerificationLaser():
+    global VerifLaser,Laser
+    if Laser and VerifLaser:
+        DestructionLaser()
+        fen.after(50,VerificationLaser)
 
 #Déplacement de l'alien
 def deplacementAl():
@@ -104,9 +113,9 @@ def DestructionLaser():
     for i in Impact1:
         for i3 in Aliens:
             for j in i3:
-                if  i==j:
+                if i==j:
                     Canevas.delete(j)
-                    Canevas.delete(Laser)
+                    Canevas.delete(Laser)   
                     Score+=50
                     Morts+=1
                     if Morts==18:
@@ -209,6 +218,7 @@ for i in range (0,3):
     for j in range (0,6):
         Canevas.move(Aliens[i][j],dX,dY)
 
+VerifLaser=True
 YLaser=750
 
 deplacementAl()
@@ -227,4 +237,3 @@ fen.mainloop()
 
 #Canevas.coords(Vaisseau,X-rayon,Y-rayon,X+rayon,Y+rayon)
 #fen.after(20,deplacementAl)
-
