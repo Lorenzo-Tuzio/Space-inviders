@@ -51,12 +51,13 @@ class Tir :
 
 
 class Alien:
-    def __init__(self,x,y,Canevas):
-        self.x=x
-        self.y=y
+    def __init__(self,Canevas):
         self.alien=PhotoImage(file='enemy.gif')
         self.Canevas = Canevas
-        self.image = self.Canevas.create_image(self.x,self.y,image=self.alien)
+    def CreationAliens(self,x,y):
+        self.image=self.Canevas.create_image(x,y,anchor=NW,image=self.alien)
+        return self.image
+        
 
 class SpaceInvaders:
     def __init__(self):
@@ -64,8 +65,8 @@ class SpaceInvaders:
         self.fen.title('Space invaders')
         self.Largeur = 1700
         self.Hauteur = 1000
-        self.nbal_large = 6
-        self.nbal_hauteur = 3
+        self.nbal_large = 8
+        self.nbal_hauteur = 2
         self.aliens = [[],[],[]]
         # self.life=[PhotoImage(file='life-1.gif'),PhotoImage(file='life-2.gif'),PhotoImage(file='life-3.gif')]
         # self.defaite=PhotoImage(file='game_over.gif')
@@ -79,9 +80,13 @@ class SpaceInvaders:
         self.Canevas.bind('q', self.deplacer)  # déplacement à gauche
         self.Canevas.bind('l', self.deplacer)  
         self.vaisseau = Vaisseau(self.Canevas)
-        for i in range (self.nbal_large):
-            for j in range (self.nbal_hauteur):
-                self.aliens[j].append(Alien(i*100+50,j*50+50,self.Canevas))
+        self.enemi= Alien(self.Canevas)
+
+        for i in range (0,3):
+            for j in range (2,8):
+                self.aliens[i].append(self.enemi.CreationAliens(j*100,i*100))
+        self.deplacement_al(self.Canevas)
+
         self.start = Button(self.fen, text='Nouvelle Partie')
         self.start.pack(anchor=N, padx=5, pady=5)
         self.quitter = Button(self.fen, text ='Quitter',command=self.fen.destroy)
@@ -105,11 +110,12 @@ class SpaceInvaders:
         if touche=='l': 
             self.veriflaser = True
             self.tir = Tir(self.vaisseau.PosX,self.vaisseau.PosY,self.Canevas)
-            self.MouvTir(self,self.veriflaser)
+            self.mouv_tir(self,self.veriflaser)
             #on dessine le vaisseau à sa nouvelle place
         self.Canevas.coords(self.vaisseau.image,self.vaisseau.PosX,self.vaisseau.PosY)
     
-    def deplacement_al(self):
+    def deplacement_al(self,canevas):
+        self.Canevas=canevas
         self.TailleAl=50
         self.x = 200
         self.y = 0
@@ -134,6 +140,10 @@ class SpaceInvaders:
         for i in range(len(self.aliens)):
             for j in range(len(self.aliens[i])):
                 self.Canevas.coords(self.aliens[i][j],self.x+j*100,self.y+i*100)
+        for i in range (0,3):
+            for j in range (0,6):
+                self.Canevas.move(self.aliens[i][j],self.dx,self.dy)
+        
         #déplacement
         self.fen.after(40,self.deplacement_al)
 
@@ -141,7 +151,7 @@ class SpaceInvaders:
         if veriflaser:
             if self.Canevas.coords(self.Laser)[1]<=0:
                 self.Canevas.delete(self.Laser)
-                self.VerifLaser=True
+                self.VerifLaser=False
             else :
                 self.Canevas.move(self.Laser,0,-10)
                 SpaceInvaders.fen.after(10,self.MouvTir)
