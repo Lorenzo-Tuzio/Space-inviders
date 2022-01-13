@@ -36,7 +36,7 @@ def CreationTir():
 def MouvTir():
     global touche,YLaser,Laser,VerifLaser
     if VerifLaser:
-        if Canevas.coords(Laser)[1]<=0:
+        if Laser and Canevas.coords(Laser)[1]<=0:
             Canevas.delete(Laser)
             VerifLaser=False
         else :
@@ -44,8 +44,8 @@ def MouvTir():
             fen.after(10,MouvTir)
 
 def VerificationLaser():
-    global VerifLaser
-    if VerifLaser:
+    global VerifLaser,Laser
+    if Laser and VerifLaser:
         DestructionLaser()
         fen.after(50,VerificationLaser)
 
@@ -113,13 +113,14 @@ def DestructionLaser():
             for j in i3:
                 if i==j:
                     Canevas.delete(j)
-                    collision=True
+                    Canevas.delete(Laser)   
                     Score+=50
                     Morts+=1
-            if Morts==18:
-                Canevas.create_image(0,0,anchor=NW,image=Victoire)
-        if collision:
-            Canevas.delete(Laser)
+                    if Morts==18:
+                        Canevas.create_image(0,0,anchor=NW,image=Victoire)
+                    return 
+
+
 
 def DestructionTirAlien():
     global Laser,TirAlien,Aliens,Ilots,Vaisseau,VerifLaser,Vies
