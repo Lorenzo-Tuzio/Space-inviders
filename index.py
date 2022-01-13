@@ -139,11 +139,11 @@ class SpaceInvaders:
 
     def mouv_tir(self,veriflaser):
         if veriflaser:
-            if self.Canevas.coords(self.Laser)[1]<=0:
-                self.Canevas.delete(self.Laser)
+            if self.Canevas.coords(self.laser)[1]<=0:
+                self.Canevas.delete(self.laser)
                 self.VerifLaser=True
             else :
-                self.Canevas.move(self.Laser,0,-10)
-                SpaceInvaders.fen.after(10,self.MouvTir)
+                self.Canevas.move(self.laser,0,-10)
+                SpaceInvaders.fen.after(10,self.mouv_tir)
 
 jeu = SpaceInvaders()
