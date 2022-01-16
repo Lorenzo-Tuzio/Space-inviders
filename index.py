@@ -87,10 +87,20 @@ class SpaceInvaders:
         self.vaisseau = Vaisseau(self.Canevas)
         self.enemi= Alien(self.Canevas)
 
+        self.x = 200
+        self.y = 0
+        self.dx = 3
+        self.dy = 0
         for i in range (0,3):
             for j in range (2,8):
                 self.aliens[i].append(self.enemi.CreationAliens(j*100,i*100))
-        self.deplacement_al(self.Canevas)
+        print(self.aliens)
+        for i in range (0,3):
+            for j in range (0,6):
+                self.Canevas.move(self.aliens[i][j],self.dx,self.dy)
+            
+        self.deplacement_al(self.x,self.y,self.dx,self.dy)
+            
 
         self.start = Button(self.fen, text='Nouvelle Partie')
         self.start.pack(anchor=N, padx=5, pady=5)
@@ -124,12 +134,12 @@ class SpaceInvaders:
             
 
     
-    def deplacement_al(self):
+    def deplacement_al(self,x,y,dx,dy):
         self.TailleAl=50
-        self.x = 200
-        self.y = 0
-        self.dx = 3
-        self.dy = 0
+        self.x = x
+        self.y = y
+        self.dx = dx
+        self.dy = dy
         self.xp=self.Canevas.coords(self.aliens[0][0])[0]
         self.xd=self.Canevas.coords(self.aliens[0][-1])[0]
         #rebond à gauche
@@ -149,10 +159,6 @@ class SpaceInvaders:
         for i in range(len(self.aliens)):
             for j in range(len(self.aliens[i])):
                 self.Canevas.coords(self.aliens[i][j],self.x+j*100,self.y+i*100)
-        for i in range (0,3):
-            for j in range (0,6):
-                self.Canevas.move(self.aliens[i][j],self.dx,self.dy)
-        
         #déplacement
         self.fen.after(40,self.deplacement_al)
 
