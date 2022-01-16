@@ -5,6 +5,7 @@ le 16/12/2021
 """
 
 from tkinter import *
+import random as rd
 
 # def creation_tir():
 #     global PosX,PosY,Laser,VerifLaser
@@ -49,6 +50,10 @@ class Tir :
         self.Canevas = Canevas
         self.Laser=self.Canevas.create_image(self.XLaser,self.YLaser,image=self.tir)
 
+class TirAl:
+    def __init__(self):
+        self.tiral=PhotoImage(file='laser.gif')
+
 
 class Alien:
     def __init__(self,Canevas):
@@ -78,7 +83,7 @@ class SpaceInvaders:
         self.Canevas.focus_set()
         self.Canevas.bind('d', self.deplacer)  # déplacement à droite
         self.Canevas.bind('q', self.deplacer)  # déplacement à gauche
-        self.Canevas.bind('l', self.deplacer)  
+        self.Canevas.bind('l', self.tirer)  
         self.vaisseau = Vaisseau(self.Canevas)
         self.enemi= Alien(self.Canevas)
 
@@ -95,6 +100,8 @@ class SpaceInvaders:
         self.score = Label(self.fen, textvariable=self.lol , fg="black")
         self.score.pack(anchor=NW, padx = 5, pady = 5)
         self.Canevas.pack()
+        self.tir = []
+        self.fen.after(10, self.mouv_tir)
         self.fen.mainloop()
 
     def deplacer(self, event):
@@ -107,15 +114,17 @@ class SpaceInvaders:
         if touche =='q' :
             if self.vaisseau.PosX>50:
                 self.vaisseau.PosX-=10
-        if touche=='l': 
-            self.veriflaser = True
-            self.tir = Tir(self.vaisseau.PosX,self.vaisseau.PosY,self.Canevas)
-            self.mouv_tir(self,self.veriflaser)
-            #on dessine le vaisseau à sa nouvelle place
+        #on dessine le vaisseau à sa nouvelle place
         self.Canevas.coords(self.vaisseau.image,self.vaisseau.PosX,self.vaisseau.PosY)
     
-    def deplacement_al(self,canevas):
-        self.Canevas=canevas
+    def tirer(self,event):
+        touche=event.keysym
+        if touche=='l': 
+            self.tir.append(Tir(self.vaisseau.PosX,self.vaisseau.PosY,self.Canevas))
+            
+
+    
+    def deplacement_al(self):
         self.TailleAl=50
         self.x = 200
         self.y = 0
@@ -147,13 +156,25 @@ class SpaceInvaders:
         #déplacement
         self.fen.after(40,self.deplacement_al)
 
-    def mouv_tir(self,veriflaser):
-        if veriflaser:
-            if self.Canevas.coords(self.Laser)[1]<=0:
-                self.Canevas.delete(self.Laser)
-                self.VerifLaser=False
+    def mouv_tir(self):
+        tir_to_delete = []
+        for tir in self.tir:
+            if self.Canevas.coords(tir.Laser)[1]<=0:
+                tir_to_delete.append(tir)
             else :
-                self.Canevas.move(self.Laser,0,-10)
-                SpaceInvaders.fen.after(10,self.MouvTir)
+                self.Canevas.move(tir.Laser,0,-3)
 
+        for tir in tir_to_delete:
+            self.Canevas.delete(tir.Laser)
+            self.tir.remove(tir)
+
+        self.fen.after(10, self.mouv_tir)
+    def CreationTirAlien(self):
+        i=rd.randint(0,len(Aliens)-1)
+        j=rd.randint(0,len(Aliens[i])-1)
+        XAlien=self.Canevas.coords(Aliens[i][j])[0]
+        YAlien=self.Canevas.coords(Aliens[i][j])[1]
+        TirAlien.append(self.Canevas.create_image(XAlien,YAlien,image=Arc))
+        DestructionTirAlien()
+        self.fen.after(1000,self.CreationTirAlien)
 jeu = SpaceInvaders()
