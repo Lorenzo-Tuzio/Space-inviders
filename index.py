@@ -72,14 +72,19 @@ class SpaceInvaders:
         self.Hauteur = 1000
         self.nbal_large = 8
         self.nbal_hauteur = 2
+        self.scorenb = 0
+        self.mort = 0
+        self.vies =3
         self.aliens = [[],[],[]]
-        # self.life=[PhotoImage(file='life-1.gif'),PhotoImage(file='life-2.gif'),PhotoImage(file='life-3.gif')]
+        self.life=[PhotoImage(file='life-1.gif'),PhotoImage(file='life-2.gif'),PhotoImage(file='life-3.gif')]
         # self.defaite=PhotoImage(file='game_over.gif')
         # self.victoire=PhotoImage(file='Win.gif')
         self.Canevas = Canvas(self.fen,width = self.Largeur, height = self.Hauteur)
         self.photo = PhotoImage(file="space_invaders_wallpaper.gif")
         self.item = self.Canevas.create_image(0,0,anchor=NW, image=self.photo)
         self.laser=PhotoImage(file='laser.gif')
+        self.victoire=PhotoImage(file='victoire.gif')
+        self.defaite=PhotoImage(file='defaite.gif')
         self.Canevas.focus_set()
         self.Canevas.bind('d', self.deplacer)  # déplacement à droite
         self.Canevas.bind('q', self.deplacer)  # déplacement à gauche
@@ -175,15 +180,59 @@ class SpaceInvaders:
 
         self.fen.after(10, self.mouv_tir)
 
-    def CreationTirAlien(self):
-        i=rd.randint(0,len(Aliens)-1)
-        j=rd.randint(0,len(Aliens[i])-1)
-        XAlien=self.Canevas.coords(Aliens[i][j])[0]
-        YAlien=self.Canevas.coords(Aliens[i][j])[1]
-        TirAlien.append(self.Canevas.create_image(XAlien,YAlien,image=Arc))
-        DestructionTirAlien()
-        self.fen.after(1000,self.CreationTirAlien)
+    def creation_tir_alien(self):
+        self.tiralien=[]
+        i=rd.randint(0,len(self.aliens)-1)
+        j=rd.randint(0,len(self.aliens[i])-1)
+        XAlien=self.Canevas.coords(self.aliens[i][j])[0]
+        YAlien=self.Canevas.coords(self.aliens[i][j])[1]
+        self.tiralien.append(self.Canevas.create_image(XAlien,YAlien,image=self.Arc)) #c'est quoi ARC?
+        self.destruction_tir_alien()
+        self.fen.after(1000,self.creation_tir_alien)
     
-
+    def destruction_Laser(self):
+    #on cherche les éléments qui ont la même position que le laser
+    #self.collision=False
+        self.x1Laser=self.Canevas.coords(self.Laser)[0]
+        self.y1Laser=self.Canevas.coords(self.tir.Laser)[1]
+        self.x2Laser=self.x1Laser+20
+        self.y2Laser=self.y1Laser+20
+        self.impact1=self.Canevas.find_overlapping(self.x1Laser,self.y1Laser,self.x2Laser,self.y2Laser)
+    #suppression des éléments qui sont entrés en collision
+        for i in self.impact1:
+            for i3 in self.aliens:
+                for j in i3:
+                    if i==j:
+                        self.Canevas.delete(j)
+                        self.Canevas.delete(self.Laser)   
+                        self.scorenb+=50
+                        self.morts+=1
+                        if self.morts==18:
+                            self.Canevas.create_image(0,0,anchor=NW,image=self.victoire)
+                        return 
+    
+    def destruction_tir_alien(self):
+        self.Collision=False
+    #on cherche les éléments qui ont la même position que les tirs des aliens
+        if len(self.tiralien)!=0:
+            for j in self.tiralien:
+                self.n=self.Canevas.coords(j)
+                self.x1TirAlien=self.Canevas.coords(j)[0]
+                self.y1TirAlien=self.Canevas.coords(j)[1]
+                self.x2TirAlien=self.x1TirAlien+20
+                self.y2TirAlien=self.x2TirAlien+20
+                self.Impact2=self.Canevas.find_overlapping(self.x1TirAlien,self.y1TirAlien,self.x2TirAlien,self.y2TirAlien) #retourne la liste des éléments touchés
+                #suppression des éléments qui sont entrés en collision
+                for k in self.Impact2:
+                    if k==Vaisseau:
+                        self.vies-=1
+                        Collision=True
+                    if Collision:
+                        self.Canevas.delete(j)
+                        self.TirAlien.pop(self.TirAlien.index(j))
+                        if self.vies==0:
+                            self.Canevas.delete(k)
+                            self.Canevas.create_image(0,0,anchor=NW,image=self.defaite)
+        self.fen.after(10,self.destruction_tir_alien)
 
 jeu = SpaceInvaders()
