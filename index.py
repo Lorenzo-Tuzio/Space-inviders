@@ -94,12 +94,10 @@ class SpaceInvaders:
         for i in range (0,3):
             for j in range (2,8):
                 self.aliens[i].append(self.enemi.CreationAliens(j*100,i*100))
-        print(self.aliens)
+        
         for i in range (0,3):
             for j in range (0,6):
                 self.Canevas.move(self.aliens[i][j],self.dx,self.dy)
-            
-        self.deplacement_al(self.x,self.y,self.dx,self.dy)
             
 
         self.start = Button(self.fen, text='Nouvelle Partie')
@@ -112,6 +110,7 @@ class SpaceInvaders:
         self.Canevas.pack()
         self.tir = []
         self.fen.after(10, self.mouv_tir)
+        self.deplacement_al(self.x,self.y,self.dx,self.dy)
         self.fen.mainloop()
 
     def deplacer(self, event):
@@ -175,6 +174,7 @@ class SpaceInvaders:
             self.tir.remove(tir)
 
         self.fen.after(10, self.mouv_tir)
+
     def CreationTirAlien(self):
         i=rd.randint(0,len(Aliens)-1)
         j=rd.randint(0,len(Aliens[i])-1)
@@ -183,4 +183,7 @@ class SpaceInvaders:
         TirAlien.append(self.Canevas.create_image(XAlien,YAlien,image=Arc))
         DestructionTirAlien()
         self.fen.after(1000,self.CreationTirAlien)
+    
+
+
 jeu = SpaceInvaders()

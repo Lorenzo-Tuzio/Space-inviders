@@ -5,16 +5,46 @@ le 16/12/2021
 """
 
 from tkinter import *
+import fonction as f
+from random import *
+
+def Clavier(event): #Gestion de l'évenement Appui sur une touche du clavier
+    global PosX,PosY
+    touche=event.keysym
+    #déplacement vers la droite
+    if touche== 'd' :
+        if PosX<1650:
+            PosX+=10
+    #déplacement vers la gauche
+    if touche=='q' :
+        if PosX>50:
+            PosX-=10
+    if touche=='l':
+        CreationTir()
+        MouvTir()
+    #on dessine le vaisseau à sa nouvelle place
+    Canevas.coords(Vaisseau,PosX,PosY)
+
+def CreationTir():
+    global PosX,PosY,Laser,VerifLaser
+    XLaser=PosX
+    YLaser1=PosY
+    Laser=Canevas.create_image(XLaser,YLaser1,image=Arc)
+    VerifLaser=True
+    VerificationLaser()
 
 def MouvTir():
     global touche,YLaser,Laser,VerifLaser
     if VerifLaser:
-        if Laser and Canevas.coords(Laser)[1]<=0:
+        # if Laser and Canevas.coords(Laser)[1]<=0:
+        #     Canevas.delete(Laser)
+        #     VerifLaser=False
+        #     return(Canevas.coords(Laser))
+        # else :
+        Canevas.move(Laser,0,-10)
+        if Canevas.coords(Laser)[1]<=-Hauteur:
             Canevas.delete(Laser)
-            VerifLaser=False
-        else :
-            Canevas.move(Laser,0,-10)
-            fen.after(10,MouvTir)
+        fen.after(10,MouvTir)
 
 def VerificationLaser():
     global VerifLaser,Laser
@@ -45,8 +75,7 @@ def deplacementAl():
     for i in range(len(Aliens)):
         for j in range(len(Aliens[i])):
             Canevas.coords(Aliens[i][j],X+j*100,Y+i*100)
-    if Y>=700:
-        Canevas.unbind('l')
+
     #déplacement
     fen.after(40,deplacementAl)
 
@@ -73,7 +102,6 @@ def MouvTirAlien():
 def DestructionLaser():
     global Laser,TirAlien,Aliens,Ilots,Vaisseau,VerifLaser,Score,Morts
     #on cherche les éléments qui ont la même position que le laser
-    collision=False
     x1Laser=Canevas.coords(Laser)[0]
     y1Laser=Canevas.coords(Laser)[1]
     x2Laser=x1Laser+20
@@ -136,7 +164,8 @@ start = Button(fen, text='Nouvelle Partie')
 start.pack(anchor=N, padx=5, pady=5)
 
 # Création d'un widget Button (bouton quitter)
-
+Quitter = Button(fen, text ='Quitter',command=fen.destroy)
+Quitter.pack(anchor=NE, padx = 5, pady = 5)
 
 #Afichage score
 x=StringVar()
@@ -145,7 +174,12 @@ score = Label(fen, textvariable=x , fg="black")
 score.pack(anchor=NW, padx = 5, pady = 5)
 Canevas.pack()
 
-
+Life=[PhotoImage(file='life-1.gif'),PhotoImage(file='life-2.gif'),PhotoImage(file='life-3.gif')]
+Dab=PhotoImage(file='player.gif')
+Arc=PhotoImage(file='laser.gif')
+bombe=PhotoImage(file='laser.gif')
+Defaite=PhotoImage(file='laser.gif')
+Victoire=PhotoImage(file='laser.gif')
 
 Vies=3
 Morts=0
@@ -176,6 +210,8 @@ Y=0
 for i in range (0,3):
     for j in range (2,8):
         Aliens[i].append(CreationAliens(j*100,i*100))
+
+
 #direction initiale
 dX=3
 dY=0
@@ -202,4 +238,3 @@ fen.mainloop()
 
 #Canevas.coords(Vaisseau,X-rayon,Y-rayon,X+rayon,Y+rayon)
 #fen.after(20,deplacementAl)
-
