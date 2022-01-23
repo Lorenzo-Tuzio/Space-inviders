@@ -18,8 +18,11 @@ Space Invaders est un jeu de tir fixe dans lequel le joueur déplace un canon la
 -Le jeu est gagné lorsque tous les enemies sont éliminés, et perdu lorsque le vaisseau n'a plus de vie
 ### Fonctionnement:
 -Appuyez sur Nouvelle Partie pour démarrer le jeu
+
 -Utilisez les boutons q (gauche) et d (droite) pour diriger le vaisseau
+
 -Appuyez sur l pour tirer
+
 ![space_vad](https://user-images.githubusercontent.com/94597199/150697299-96485373-434b-493d-b55b-24efe3e7b227.png)
 
 
