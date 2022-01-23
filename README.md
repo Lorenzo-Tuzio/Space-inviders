@@ -20,7 +20,7 @@ Space Invaders est un jeu de tir fixe dans lequel le joueur déplace un canon la
 -Appuyez sur Nouvelle Partie pour démarrer le jeu
 -Utilisez les boutons q (gauche) et d (droite) pour diriger le vaisseau
 -Appuyez sur l pour tirer
-
+![space_vad](https://user-images.githubusercontent.com/94597199/150697299-96485373-434b-493d-b55b-24efe3e7b227.png)
 
 
 ## les spécificités de votre implémentation
@@ -33,5 +33,7 @@ https://github.com/Lorenzo-Tuzio/Space-inviders.git
 ## les implémentations des structures de données demandées
 ***
 ligne 11: implémentation de pile
+
 ligne 195: implémentation de file
+
 ligne 79: implémentation de liste
