@@ -1,4 +1,4 @@
-# Space-inviders
+# Space-inviders ( TUZIO & PERRICHET )
 ***
 Space Invaders est un jeu de tir fixe dans lequel le joueur déplace un canon laser horizontalement en bas de l'écran et tire sur des aliens au-dessus de sa tête.
 
