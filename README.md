@@ -3,7 +3,7 @@
 Space Invaders est un jeu de tir fixe dans lequel le joueur déplace un canon laser horizontalement en bas de l'écran et tire sur des aliens au-dessus de sa tête.
 
 ## Table des matières
-1. [Règles du jeu](# règles-du-jeu)
+1. [Règles du jeu](#règles-du-jeu)
 2. [les spécificités de votre implémentation](#les-spécificités-de-votre-implémentation)
 3. [Adresse Git](#Adresse-Git)
 4. [les implémentations des structures de données demandées](#les-implémentations-des-structures-de-données-demandées)
