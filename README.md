@@ -10,7 +10,6 @@ Space Invaders est un jeu de tir fixe dans lequel le joueur déplace un canon la
 
 ## Règles du jeu
 ***
-### Règles du jeu:
 -Vous contrôlez un vaisseau pouvant tirer
 -Les ennemis descendent dans la zone de jeu
 -Les fusées sont éliminées en 1 coup, les soucoupes en 4 coups
