@@ -8,7 +8,7 @@ from random import randint
 from typing import Text
 
 
-class HP: #implementation de pile
+class HP: #classe pour la vie du joueur
 
 	def __init__(self):
 		self.life = [1,2,3]
@@ -27,7 +27,6 @@ class Vaisseau:
     def __init__(self, Canevas):
         self.PosX=450
         self.PosY=850
-        # self.Laser=True
         self.joueur=PhotoImage(file='player.gif')
         self.Canevas = Canevas
         self.image = self.Canevas.create_image(self.PosX,self.PosY,image=self.joueur)
@@ -41,7 +40,7 @@ class Tir :
         self.Canevas = Canevas
         self.Laser=self.Canevas.create_image(self.xLaser,self.yLaser,image=self.tir)
 
-class TirAl:
+class TirAl: #classe tir aliens
     def __init__(self):
         self.tiral=PhotoImage(file='laser.gif')
 
@@ -63,7 +62,7 @@ class Ilots:
         return Ilot
         
 
-class SpaceInvaders:
+class SpaceInvaders: #classe principale
     def __init__(self):
         self.fen=Tk()
         self.fen.title('Space invaders')
@@ -97,6 +96,7 @@ class SpaceInvaders:
         self.tiral=TirAl()
         self.bloc=Ilots(self.Canevas)
 
+        #création d'ilots
         self.ilots=[]
         self.xilot=45
         self.yilot=600
@@ -110,6 +110,7 @@ class SpaceInvaders:
             else :
                 self.xilot+=30
 
+        #création d'aliens
         self.x = 200
         self.y = 0
         self.dx = 3
@@ -142,11 +143,9 @@ class SpaceInvaders:
         self.creation_tir_alien()
         self.mouv_tir_alien()
 
-
-
         self.fen.mainloop()
 
-    def deplacer(self, event):
+    def deplacer(self, event): #déplacement du joueur
         touche=event.keysym
         #déplacement vers la droite
         if touche == 'd' :
@@ -159,7 +158,7 @@ class SpaceInvaders:
         #on dessine le vaisseau à sa nouvelle place
         self.Canevas.coords(self.vaisseau.image,self.vaisseau.PosX,self.vaisseau.PosY)
     
-    def tirer(self,event):
+    def tirer(self,event): #tir du joueur
         touche=event.keysym
         if touche=='l': 
             self.tir.append(Tir(self.vaisseau.PosX,self.vaisseau.PosY,self.Canevas))
@@ -167,7 +166,7 @@ class SpaceInvaders:
     
 
     
-    def deplacement_al(self):
+    def deplacement_al(self): #déplacement des aliens
         self.TailleAl=50
         self.xp=self.Canevas.coords(self.aliens[0][0])[0]
         self.xd=self.Canevas.coords(self.aliens[0][-1])[0]
@@ -191,7 +190,7 @@ class SpaceInvaders:
         #déplacement
         self.fen.after(40,self.deplacement_al)
 
-    def mouv_tir(self):
+    def mouv_tir(self): #deplacement du tir du joueur
         tir_to_delete = [] #implementation file
         for tir in self.tir:
             if self.Canevas.coords(tir.Laser)[1]<=0:
@@ -226,9 +225,8 @@ class SpaceInvaders:
         self.fen.after(10,self.mouv_tir_alien)
 
 
-    def destruction_Laser(self):
+    def destruction_Laser(self): #destruction des éléments touchés par le laser du joueur
     #on cherche les éléments qui ont la même position que le laser
-    #self.collision=False
         self.x1Laser=self.Canevas.coords(self.tir)[0]
         self.y1Laser=self.Canevas.coords(self.tir)[1]
         self.x2Laser=self.x1Laser+20
